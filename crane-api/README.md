@@ -62,6 +62,7 @@ crane-api/
 - **数据库迁移**: Flask-Migrate
 - **认证**: Flask-JWT-Extended
 - **跨域**: Flask-CORS
+- **API 文档**: Flasgger (Swagger UI)
 
 ## 快速开始
 
@@ -165,10 +166,26 @@ pip install flask flask-sqlalchemy flask-migrate flask-jwt-extended flask-cors p
 ### 4. 启动应用
 
 ```bash
+# 使用 uv（推荐）
+uv run python run.py
+
+# 或使用普通 Python
 python run.py
 ```
 
 应用将在 `http://localhost:5000` 启动。
+
+### 5. 访问 API 文档
+
+启动应用后，可以通过以下地址访问 Swagger UI 文档：
+
+- **Swagger UI**: http://localhost:5000/api/docs
+- **API 规范 JSON**: http://localhost:5000/apispec.json
+
+在 Swagger UI 中，你可以：
+- 查看所有 API 接口
+- 查看请求参数和响应格式
+- 直接在页面上测试 API 接口
 
 ## API接口
 

@@ -1,8 +1,10 @@
 """Flask应用工厂"""
 from flask import Flask
 from flask_cors import CORS
+from flasgger import Swagger
 from app.config import Config
 from app.extensions import db, migrate, jwt
+from app.swagger_config import SWAGGER_CONFIG, SWAGGER_TEMPLATE
 
 
 def create_app(config_class=Config):
@@ -15,6 +17,9 @@ def create_app(config_class=Config):
     migrate.init_app(app, db)
     jwt.init_app(app)
     CORS(app)
+    
+    # 初始化 Swagger
+    Swagger(app, config=SWAGGER_CONFIG, template=SWAGGER_TEMPLATE)
     
     # 导入所有模型，确保 Flask-Migrate 能检测到它们
     from app.models import (
