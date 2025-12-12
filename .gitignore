@@ -1,0 +1,373 @@
+# ============================================
+# 通用文件
+# ============================================
+
+# 操作系统文件
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+Desktop.ini
+
+# IDE 和编辑器
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.project
+.classpath
+.settings/
+*.sublime-project
+*.sublime-workspace
+*.code-workspace
+
+# PyCharm
+.idea/
+
+# VS Code
+.vscode/
+
+# 临时文件
+*.tmp
+*.temp
+*.bak
+*.backup
+
+# 压缩文件（如果不需要版本控制）
+*.zip
+*.tar.gz
+*.rar
+
+# ============================================
+# Python / Flask (crane-api)
+# ============================================
+
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# C extensions
+*.so
+
+# Distribution / packaging
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+share/python-wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+MANIFEST
+
+# PyInstaller
+*.manifest
+*.spec
+
+# Installer logs
+pip-log.txt
+pip-delete-this-directory.txt
+
+# Unit test / coverage reports
+htmlcov/
+.tox/
+.nox/
+.coverage
+.coverage.*
+.cache
+nosetests.xml
+coverage.xml
+*.cover
+*.py,cover
+.hypothesis/
+.pytest_cache/
+cover/
+
+# Translations
+*.mo
+*.pot
+
+# Django stuff:
+*.log
+local_settings.py
+db.sqlite3
+db.sqlite3-journal
+
+# Flask stuff:
+instance/
+.webassets-cache
+
+# Scrapy stuff:
+.scrapy
+
+# Sphinx documentation
+docs/_build/
+
+# PyBuilder
+.pybuilder/
+target/
+
+# Jupyter Notebook
+.ipynb_checkpoints
+
+# IPython
+profile_default/
+ipython_config.py
+
+# pyenv
+.python-version
+
+# pipenv
+Pipfile.lock
+
+# poetry
+poetry.lock
+
+# pdm
+.pdm.toml
+.pdm-python
+.pdm-build/
+
+# PEP 582
+__pypackages__/
+
+# Celery stuff
+celerybeat-schedule
+celerybeat.pid
+
+# SageMath parsed files
+*.sage.py
+
+# Environments
+.env
+.env.local
+.env.*.local
+.venv
+env/
+venv/
+ENV/
+env.bak/
+venv.bak/
+
+# Spyder project settings
+.spyderproject
+.spyproject
+
+# Rope project settings
+.ropeproject
+
+# mkdocs documentation
+/site
+
+# mypy
+.mypy_cache/
+.dmypy.json
+dmypy.json
+
+# Pyre type checker
+.pyre/
+
+# pytype static type analyzer
+.pytype/
+
+# Cython debug symbols
+cython_debug/
+
+# Database files
+*.db
+*.sqlite
+*.sqlite3
+*.db-journal
+
+# Flask-Migrate
+migrations/versions/*.pyc
+migrations/versions/__pycache__/
+
+# uv specific
+.venv/
+uv-cache/
+
+# 日志文件
+*.log
+logs/
+*.log.*
+
+# 密钥文件
+*.pem
+*.key
+secrets/
+
+# 性能分析文件
+*.prof
+*.pstats
+
+# ============================================
+# Node.js / Next.js / React (crane-web)
+# ============================================
+
+# Dependencies
+node_modules/
+/.pnp
+.pnp.js
+.pnp.*
+
+# Yarn
+.yarn/cache
+.yarn/unplugged
+.yarn/build-state.yml
+.yarn/install-state.gz
+.yarn-integrity
+
+# Package manager locks (保留 package-lock.json，但可以忽略其他)
+yarn.lock
+pnpm-lock.yaml
+
+# npm
+.npm
+npm-debug.log*
+lerna-debug.log*
+
+# pnpm
+pnpm-debug.log*
+.pnpm-debug.log*
+
+# Yarn
+yarn-debug.log*
+yarn-error.log*
+
+# Testing
+/coverage
+coverage/
+.nyc_output
+*.lcov
+.jest/
+
+# Next.js - Build output
+/.next/
+/out/
+.next/
+out/
+standalone/
+.next/cache/
+.next/server/
+.next/static/
+.next/standalone/
+.next/export/
+
+# Next.js - Type definitions (自动生成，不应提交)
+next-env.d.ts
+
+# Next.js - SWC compiler cache
+.swc/
+
+# TypeScript
+*.tsbuildinfo
+
+# Environment variables
+.env
+.env*.local
+.env.development.local
+.env.test.local
+.env.production.local
+.env.local
+
+# Debug logs
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+lerna-debug.log*
+.pnpm-debug.log*
+
+# Linting
+.eslintcache
+.eslintcache.*
+
+# Formatting
+.prettiercache
+
+# Build tools
+.turbo/
+.turbo
+.parcel-cache/
+.parcel-cache
+
+# Storybook
+storybook-static/
+.storybook-out/
+
+# Service Worker
+public/sw.js
+public/workbox-*.js
+sw.js
+workbox-*.js
+service-worker.js
+
+# Deployment platforms
+.vercel/
+.vercel
+.netlify/
+.netlify
+
+# Serverless
+.serverless/
+
+# Production builds
+/build
+/dist
+
+# Other build tools
+.fusebox/
+.dynamodb/
+.tern-port
+.vscode-test
+
+# Optional REPL history
+.node_repl_history
+
+# Output of 'npm pack'
+*.tgz
+
+# ============================================
+# 项目特定
+# ============================================
+
+# 上传文件目录
+uploads/
+static/uploads/
+
+# 报表生成临时文件
+reports/temp/
+exports/temp/
+
+# 缓存文件
+.cache/
+cache/
+
+# 备份文件
+backup/
+
+# 本地配置文件
+config.local.*
+settings.local.*
+*.local.*
+
+# 调试文件
+debug.log
+error.log
+access.log
+
