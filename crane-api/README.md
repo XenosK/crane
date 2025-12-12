@@ -83,18 +83,84 @@ pip install -r requirements.txt
 cp .env.example .env
 ```
 
-### 3. 初始化数据库
+#### 数据库配置
+
+crane-api 支持 SQLite（默认）和 MySQL 两种数据库后端。
+
+**使用 SQLite（默认）**
+
+无需额外配置，默认使用 SQLite，数据库文件为 `crane.db`。
+
+可选配置：
+```bash
+# 指定 SQLite 数据库文件路径（可选）
+DB_PATH=crane.db
+```
+
+**使用 MySQL**
+
+设置以下环境变量：
 
 ```bash
-# 初始化迁移
-flask db init
+# 数据库类型
+DB_TYPE=mysql
 
-# 创建迁移
-flask db migrate -m "Initial migration"
-
-# 应用迁移
-flask db upgrade
+# MySQL 连接配置
+DB_HOST=localhost
+DB_PORT=3306
+DB_USER=root
+DB_PASSWORD=your_password
+DB_NAME=crane
+DB_CHARSET=utf8mb4
 ```
+
+或者使用完整的数据库连接字符串（优先级最高）：
+
+```bash
+DATABASE_URL=mysql+pymysql://user:password@host:port/database?charset=utf8mb4
+```
+
+**环境变量说明**
+
+| 变量名 | 说明 | 默认值 | 必需 |
+|--------|------|--------|------|
+| `DB_TYPE` | 数据库类型 (`sqlite` 或 `mysql`) | `sqlite` | 否 |
+| `DATABASE_URL` | 完整的数据库连接字符串 | - | 否 |
+| `DB_PATH` | SQLite 数据库文件路径 | `crane.db` | 否（SQLite） |
+| `DB_HOST` | MySQL 主机地址 | `localhost` | 否（MySQL） |
+| `DB_PORT` | MySQL 端口 | `3306` | 否（MySQL） |
+| `DB_USER` | MySQL 用户名 | `root` | 否（MySQL） |
+| `DB_PASSWORD` | MySQL 密码 | - | 是（MySQL） |
+| `DB_NAME` | MySQL 数据库名 | `crane` | 否（MySQL） |
+| `DB_CHARSET` | MySQL 字符集 | `utf8mb4` | 否（MySQL） |
+
+### 3. 初始化数据库
+
+使用初始化脚本创建数据库表：
+
+```bash
+# 使用 uv（推荐）
+uv run python init_db.py
+
+# 或使用普通 Python（需要先安装依赖）
+python init_db.py
+```
+
+**注意**：如果遇到 `ModuleNotFoundError`，请先安装依赖：
+
+```bash
+# 使用 uv（推荐）
+uv sync
+
+# 或使用 pip
+pip install flask flask-sqlalchemy flask-migrate flask-jwt-extended flask-cors pymysql
+```
+
+初始化脚本会创建所有必需的数据表，包括：
+- `data_sources` - 数据源表
+- `applications` - 应用表
+- `users`, `roles`, `permissions` - 用户、角色、权限表
+- `metrics`, `metric_definitions`, `metric_monitoring`, `metric_reports` - 指标相关表
 
 ### 4. 启动应用
 
@@ -188,7 +254,7 @@ pytest --cov=app
 1. 设置环境变量：
    - `FLASK_ENV=production`
    - `SECRET_KEY`: 生成强密钥
-   - `DATABASE_URL`: 生产数据库连接
+   - `DB_TYPE=mysql` 或使用 `DATABASE_URL`: 生产数据库连接（推荐使用 MySQL）
    - `CORS_ORIGINS`: 允许的前端域名
 
 2. 使用生产级WSGI服务器（如Gunicorn）：

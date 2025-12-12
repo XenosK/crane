@@ -1,12 +1,14 @@
 "use client";
 
 import { Modal, Form, Input, InputNumber, Select, Switch, message } from "antd";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
+import { createDataSource, DataSource } from "@/services/datasource";
 
 interface DataSourceConfigModalProps {
   visible: boolean;
   dataSourceType: string | null;
   onClose: () => void;
+  onSuccess?: () => void; // 保存成功后的回调
 }
 
 interface ConfigField {
@@ -90,8 +92,10 @@ export default function DataSourceConfigModal({
   visible,
   dataSourceType,
   onClose,
+  onSuccess,
 }: DataSourceConfigModalProps) {
   const [form] = Form.useForm();
+  const [loading, setLoading] = useState(false);
   // Hooks 必须在组件顶层调用，不能在条件判断之后
   const authType = Form.useWatch("authType", form);
 
@@ -101,14 +105,77 @@ export default function DataSourceConfigModal({
     }
   }, [visible, dataSourceType, form]);
 
+  /**
+   * 根据数据源类型构建 config 对象
+   */
+  const buildConfig = (type: string | null, values: any): Record<string, any> => {
+    const config: Record<string, any> = {};
+    
+    if (type === 'presto') {
+      if (values.ssl !== undefined) {
+        config.ssl = values.ssl;
+      }
+    } else if (type === 'hive') {
+      if (values.authType) {
+        config.authType = values.authType;
+      }
+      if (values.serviceDiscoveryMode) {
+        config.serviceDiscoveryMode = values.serviceDiscoveryMode;
+      }
+    } else if (type === 'doris' || type === 'mysql') {
+      if (values.charset) {
+        config.charset = values.charset;
+      }
+      if (values.timeout !== undefined) {
+        config.timeout = values.timeout;
+      }
+      if (type === 'mysql' && values.ssl !== undefined) {
+        config.ssl = values.ssl;
+      }
+    }
+    
+    return config;
+  };
+
   const handleSubmit = async () => {
     try {
       const values = await form.validateFields();
-      console.log("配置数据:", values);
-      message.success(`${dataSourceNames[dataSourceType || ""]} 数据源配置成功`);
-      onClose();
-    } catch (error) {
-      console.error("表单验证失败:", error);
+      setLoading(true);
+
+      // 构建提交数据，确保类型正确
+      const submitData: Omit<DataSource, 'id' | 'created_at' | 'updated_at' | 'last_test_at'> = {
+        name: values.name,
+        type: dataSourceType as 'presto' | 'hive' | 'doris' | 'mysql',
+        host: values.host,
+        port: Number(values.port),
+        database: values.database,
+        catalog: values.catalog,
+        schema: values.schema,
+        username: values.username,
+        password: values.password,
+        // 根据不同类型构建 config 对象
+        config: buildConfig(dataSourceType, values),
+      };
+
+      // 调用 API 创建数据源
+      const response = await createDataSource(submitData);
+      
+      if (response.code === 200) {
+        message.success(`${dataSourceNames[dataSourceType || ""]} 数据源配置成功`);
+        form.resetFields();
+        onClose();
+        // 触发成功回调，用于刷新列表
+        if (onSuccess) {
+          onSuccess();
+        }
+      } else {
+        message.error(response.message || '保存失败');
+      }
+    } catch (error: any) {
+      console.error("保存数据源失败:", error);
+      message.error(error.message || '保存失败，请检查网络连接');
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -223,7 +290,8 @@ export default function DataSourceConfigModal({
       width={600}
       okText="保存"
       cancelText="取消"
-      destroyOnHidden
+      confirmLoading={loading}
+      destroyOnClose
     >
       <Form
         form={form}

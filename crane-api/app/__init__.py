@@ -16,6 +16,14 @@ def create_app(config_class=Config):
     jwt.init_app(app)
     CORS(app)
     
+    # 导入所有模型，确保 Flask-Migrate 能检测到它们
+    from app.models import (
+        Application,
+        User, Role, Permission,
+        Metric, MetricDefinition, MetricMonitoring, MetricReport,
+        DataSource
+    )
+    
     # 注册蓝图
     from app.api import application, system, metrics, datasource
     app.register_blueprint(application.bp, url_prefix='/api/application')
