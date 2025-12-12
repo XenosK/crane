@@ -1,7 +1,10 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { useRouter } from "next/navigation";
 import AdminLayout from "@/components/AdminLayout";
+import Login from "@/pages/auth/Login";
+import { useAuth } from "@/contexts/AuthContext";
 
 // 指标平台页面
 import MetricsOverview from "@/pages/metrics/MetricsOverview";
@@ -22,6 +25,29 @@ import DataSourceList from "@/pages/system/datasource/DataSourceList";
 
 export default function Home() {
   const [currentPage, setCurrentPage] = useState("metrics/overview");
+  const { isAuthenticated, loading } = useAuth();
+  const router = useRouter();
+
+  // 如果未登录，显示登录页面
+  if (!loading && !isAuthenticated) {
+    return <Login />;
+  }
+
+  // 加载中显示空白或加载提示
+  if (loading) {
+    return (
+      <div
+        style={{
+          minHeight: "100vh",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+        }}
+      >
+        <div>加载中...</div>
+      </div>
+    );
+  }
 
   const renderContent = () => {
     switch (currentPage) {

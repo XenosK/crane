@@ -30,7 +30,8 @@ def create_app(config_class=Config):
     )
     
     # 注册蓝图
-    from app.api import application, system, metrics, datasource
+    from app.api import auth, application, system, metrics, datasource
+    app.register_blueprint(auth.bp, url_prefix='/api/auth')
     app.register_blueprint(application.bp, url_prefix='/api/application')
     app.register_blueprint(system.bp, url_prefix='/api/system')
     app.register_blueprint(metrics.bp, url_prefix='/api/metrics')

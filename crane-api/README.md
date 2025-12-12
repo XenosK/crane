@@ -175,7 +175,23 @@ python run.py
 
 应用将在 `http://localhost:5000` 启动。
 
-### 5. 访问 API 文档
+### 5. 创建默认管理员用户
+
+```bash
+# 使用 uv（推荐）
+uv run python create_admin_user.py
+
+# 或使用普通 Python
+python create_admin_user.py
+```
+
+默认管理员账号：
+- 用户名: `admin`
+- 密码: `admin123`
+
+**注意**：首次登录后请及时修改密码！
+
+### 6. 访问 API 文档
 
 启动应用后，可以通过以下地址访问 Swagger UI 文档：
 
@@ -219,6 +235,11 @@ python run.py
 - `POST /api/datasource/<id>/test` - 测试数据源连接
 - `PUT /api/datasource/<id>` - 更新数据源
 - `DELETE /api/datasource/<id>` - 删除数据源
+
+### 认证
+- `POST /api/auth/login` - 用户登录
+- `GET /api/auth/me` - 获取当前用户信息（需要认证）
+- `POST /api/auth/logout` - 用户登出（需要认证）
 
 ## 开发规范
 

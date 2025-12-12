@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { Layout, Menu, MenuProps } from "antd";
+import { Layout, Menu, MenuProps, Dropdown, Avatar, Space } from "antd";
 import {
   DashboardOutlined,
   AppstoreOutlined,
@@ -14,8 +14,11 @@ import {
   TeamOutlined,
   SafetyOutlined,
   CloudServerOutlined,
+  LogoutOutlined,
 } from "@ant-design/icons";
 import type { MenuItemType } from "antd/es/menu/hooks/useItems";
+import { useAuth } from "@/contexts/AuthContext";
+import { useRouter } from "next/navigation";
 
 const { Header, Sider, Content } = Layout;
 
@@ -123,6 +126,35 @@ interface AdminLayoutProps {
 export default function AdminLayout({ children, onMenuChange, currentPage }: AdminLayoutProps) {
   const [selectedTopMenu, setSelectedTopMenu] = useState<string>("metrics");
   const [selectedSubMenu, setSelectedSubMenu] = useState<string>("metrics/overview");
+  const { user, logout } = useAuth();
+  const router = useRouter();
+
+  const handleLogout = () => {
+    logout();
+    router.push("/");
+  };
+
+  const userMenuItems = [
+    {
+      key: "user-info",
+      label: (
+        <div style={{ padding: "4px 0" }}>
+          <div style={{ fontWeight: 500 }}>{user?.real_name || user?.username}</div>
+          <div style={{ fontSize: "12px", color: "#8c8c8c" }}>{user?.email || ""}</div>
+        </div>
+      ),
+      disabled: true,
+    },
+    {
+      type: "divider" as const,
+    },
+    {
+      key: "logout",
+      label: "退出登录",
+      icon: <LogoutOutlined />,
+      onClick: handleLogout,
+    },
+  ];
 
   const topMenuItems: MenuItemType[] = menuConfig.map((item) => ({
     key: item.key,
@@ -208,7 +240,7 @@ export default function AdminLayout({ children, onMenuChange, currentPage }: Adm
           </div>
           Crane 管理系统
         </div>
-        <Menu
+          <Menu
           theme="dark"
           mode="horizontal"
           selectedKeys={[selectedTopMenu]}
@@ -222,6 +254,33 @@ export default function AdminLayout({ children, onMenuChange, currentPage }: Adm
             fontSize: "15px",
           }}
         />
+        <Dropdown menu={{ items: userMenuItems }} placement="bottomRight">
+          <Space
+            style={{
+              cursor: "pointer",
+              padding: "0 12px",
+              borderRadius: "8px",
+              transition: "background 0.3s",
+            }}
+            onMouseEnter={(e) => {
+              e.currentTarget.style.background = "rgba(255,255,255,0.1)";
+            }}
+            onMouseLeave={(e) => {
+              e.currentTarget.style.background = "transparent";
+            }}
+          >
+            <Avatar
+              style={{
+                background: "rgba(255,255,255,0.2)",
+                color: "#fff",
+              }}
+              icon={<UserOutlined />}
+            />
+            <span style={{ color: "#fff", fontSize: "14px" }}>
+              {user?.real_name || user?.username}
+            </span>
+          </Space>
+        </Dropdown>
       </Header>
       <Layout>
         <Sider

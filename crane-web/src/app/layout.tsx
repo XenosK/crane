@@ -1,12 +1,9 @@
-import type { Metadata } from "next";
+"use client";
+
 import { ConfigProvider } from "antd";
 import zhCN from "antd/locale/zh_CN";
 import "./globals.css";
-
-export const metadata: Metadata = {
-  title: "Crane 后台管理系统",
-  description: "指标平台管理系统",
-};
+import { AuthProvider } from "@/contexts/AuthContext";
 
 export default function RootLayout({
   children,
@@ -15,32 +12,38 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="zh-CN">
+      <head>
+        <title>Crane 后台管理系统</title>
+        <meta name="description" content="指标平台管理系统" />
+      </head>
       <body>
-        <ConfigProvider
-          locale={zhCN}
-          theme={{
-            token: {
-              colorPrimary: "#667eea",
-              borderRadius: 8,
-              colorBgContainer: "#ffffff",
-              colorBgElevated: "#ffffff",
-            },
-            components: {
-              Menu: {
-                itemSelectedBg: "rgba(102, 126, 234, 0.1)",
-                itemHoverBg: "rgba(102, 126, 234, 0.06)",
-                itemActiveBg: "rgba(102, 126, 234, 0.1)",
-                subMenuItemBg: "transparent",
+        <AuthProvider>
+          <ConfigProvider
+            locale={zhCN}
+            theme={{
+              token: {
+                colorPrimary: "#667eea",
+                borderRadius: 8,
+                colorBgContainer: "#ffffff",
+                colorBgElevated: "#ffffff",
               },
-              Card: {
-                borderRadiusLG: 12,
-                paddingLG: 24,
+              components: {
+                Menu: {
+                  itemSelectedBg: "rgba(102, 126, 234, 0.1)",
+                  itemHoverBg: "rgba(102, 126, 234, 0.06)",
+                  itemActiveBg: "rgba(102, 126, 234, 0.1)",
+                  subMenuItemBg: "transparent",
+                },
+                Card: {
+                  borderRadiusLG: 12,
+                  paddingLG: 24,
+                },
               },
-            },
-          }}
-        >
-          {children}
-        </ConfigProvider>
+            }}
+          >
+            {children}
+          </ConfigProvider>
+        </AuthProvider>
       </body>
     </html>
   );

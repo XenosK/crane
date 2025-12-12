@@ -24,6 +24,12 @@ async function request<T = any>(
     'Content-Type': 'application/json',
   };
 
+  // 从 localStorage 获取 token
+  const token = typeof window !== 'undefined' ? localStorage.getItem('token') : null;
+  if (token) {
+    defaultHeaders['Authorization'] = `Bearer ${token}`;
+  }
+
   const config: RequestInit = {
     ...options,
     headers: {
