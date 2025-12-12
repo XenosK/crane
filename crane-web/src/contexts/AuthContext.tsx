@@ -22,33 +22,55 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   // 从 localStorage 恢复登录状态
   useEffect(() => {
-    const storedToken = localStorage.getItem("token");
-    const storedUser = localStorage.getItem("user");
+    const initAuth = async () => {
+      const storedToken = localStorage.getItem("token");
+      const storedUser = localStorage.getItem("user");
 
-    if (storedToken && storedUser) {
-      setToken(storedToken);
-      setUser(JSON.parse(storedUser));
-      // 验证 token 是否有效
-      validateToken(storedToken);
-    } else {
-      setLoading(false);
-    }
+      if (storedToken && storedUser) {
+        // 先设置 token 和 user，避免闪烁
+        setToken(storedToken);
+        try {
+          const parsedUser = JSON.parse(storedUser);
+          setUser(parsedUser);
+        } catch (e) {
+          // 如果解析失败，清除存储
+          clearAuth();
+          return;
+        }
+        
+        // 验证 token 是否有效
+        await validateToken(storedToken);
+      } else {
+        setLoading(false);
+      }
+    };
+
+    initAuth();
   }, []);
 
   const validateToken = async (tokenToValidate: string) => {
     try {
-      // 设置 token 到请求头（需要在 api.ts 中处理）
+      // 验证 token 是否有效
       const response = await getCurrentUser();
       if (response.code === 200 && response.data) {
+        // 更新用户信息（可能已更新）
         setUser(response.data);
+        // 更新 localStorage 中的用户信息
+        localStorage.setItem("user", JSON.stringify(response.data));
         setLoading(false);
       } else {
         // Token 无效，清除登录状态
         clearAuth();
       }
-    } catch (error) {
-      // Token 无效，清除登录状态
-      clearAuth();
+    } catch (error: any) {
+      // 如果是 401 错误，api.ts 已经处理了清除和重定向
+      // 这里只需要清除本地状态
+      if (error.message && error.message.includes('登录已过期')) {
+        clearAuth();
+      } else {
+        // 其他错误，也清除登录状态
+        clearAuth();
+      }
     }
   };
 

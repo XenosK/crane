@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import { useRouter } from "next/navigation";
 import { Layout, Menu, MenuProps, Dropdown, Avatar, Space } from "antd";
 import {
   DashboardOutlined,
@@ -18,7 +19,6 @@ import {
 } from "@ant-design/icons";
 import type { MenuItemType } from "antd/es/menu/hooks/useItems";
 import { useAuth } from "@/contexts/AuthContext";
-import { useRouter } from "next/navigation";
 
 const { Header, Sider, Content } = Layout;
 
@@ -131,7 +131,7 @@ export default function AdminLayout({ children, onMenuChange, currentPage }: Adm
 
   const handleLogout = () => {
     logout();
-    router.push("/");
+    router.push("/login");
   };
 
   const userMenuItems = [
@@ -176,6 +176,8 @@ export default function AdminLayout({ children, onMenuChange, currentPage }: Adm
     if (firstSubMenu) {
       setSelectedSubMenu(firstSubMenu);
       onMenuChange?.(firstSubMenu);
+      // 使用 Next.js 路由跳转
+      router.push(`/dashboard/${firstSubMenu}`);
     }
   };
 
@@ -183,6 +185,8 @@ export default function AdminLayout({ children, onMenuChange, currentPage }: Adm
     const key = e.key as string;
     setSelectedSubMenu(key);
     onMenuChange?.(key);
+    // 使用 Next.js 路由跳转
+    router.push(`/dashboard/${key}`);
   };
 
   // 同步外部传入的 currentPage
@@ -240,7 +244,7 @@ export default function AdminLayout({ children, onMenuChange, currentPage }: Adm
           </div>
           Crane 管理系统
         </div>
-          <Menu
+        <Menu
           theme="dark"
           mode="horizontal"
           selectedKeys={[selectedTopMenu]}

@@ -19,7 +19,7 @@ export default function Login() {
     try {
       const success = await login(values.username, values.password);
       if (success) {
-        router.push("/");
+        router.push("/dashboard/metrics/overview");
       }
     } catch (error) {
       console.error("登录失败:", error);

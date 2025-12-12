@@ -42,6 +42,20 @@ async function request<T = any>(
     const response = await fetch(fullUrl, config);
     const data = await response.json();
     
+    // 处理 401 未授权错误
+    if (response.status === 401) {
+      // 清除本地存储的 token
+      if (typeof window !== 'undefined') {
+        localStorage.removeItem('token');
+        localStorage.removeItem('user');
+        // 如果是未登录页面，不重定向
+        if (!window.location.pathname.includes('/login')) {
+          window.location.href = '/login';
+        }
+      }
+      throw new Error(data.message || '登录已过期，请重新登录');
+    }
+    
     if (!response.ok) {
       throw new Error(data.message || `HTTP error! status: ${response.status}`);
     }
