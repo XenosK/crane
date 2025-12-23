@@ -16,6 +16,9 @@ import ApplicationList from "@/pages/application/ApplicationList";
 import ApplicationCreate from "@/pages/application/ApplicationCreate";
 import ApplicationConfig from "@/pages/application/ApplicationConfig";
 
+// 语义建模页面
+import SemanticModel from "@/pages/semantic/SemanticModel";
+
 // 系统配置页面
 import SystemUser from "@/pages/system/SystemUser";
 import SystemRole from "@/pages/system/SystemRole";
@@ -26,7 +29,17 @@ export default function Dashboard() {
   const router = useRouter();
   const pathname = usePathname();
   const { isAuthenticated, loading } = useAuth();
-  const [currentPage, setCurrentPage] = useState("metrics/overview");
+  
+  // 从路径中提取当前页面，避免初始状态闪烁
+  const getCurrentPageFromPath = (path: string): string => {
+    if (path === "/dashboard" || !path) {
+      return "metrics/overview";
+    }
+    const pagePath = path.replace("/dashboard/", "").replace("/dashboard", "");
+    return pagePath || "metrics/overview";
+  };
+  
+  const [currentPage, setCurrentPage] = useState(() => getCurrentPageFromPath(pathname || ""));
 
   // 根据路径确定当前页面
   useEffect(() => {
@@ -34,14 +47,11 @@ export default function Dashboard() {
       if (pathname === "/dashboard") {
         // 访问 /dashboard 时重定向到默认页面
         router.replace("/dashboard/metrics/overview");
+        setCurrentPage("metrics/overview");
       } else {
         // 从路径中提取页面标识
-        const path = pathname.replace("/dashboard/", "");
-        if (path && path !== "dashboard") {
-          setCurrentPage(path);
-        } else {
-          setCurrentPage("metrics/overview");
-        }
+        const path = getCurrentPageFromPath(pathname);
+        setCurrentPage(path);
       }
     }
   }, [pathname, router]);
@@ -101,6 +111,9 @@ export default function Dashboard() {
         return <ApplicationCreate />;
       case "application/config":
         return <ApplicationConfig />;
+      // 语义建模
+      case "semantic/model":
+        return <SemanticModel />;
       // 系统配置
       case "system/user":
         return <SystemUser />;

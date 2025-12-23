@@ -1,8 +1,8 @@
 "use client";
 
 import { createContext, useContext, useState, useEffect, ReactNode } from "react";
+import { App } from "antd";
 import { User, login as loginApi, getCurrentUser, logout as logoutApi } from "@/services/auth";
-import { message } from "antd";
 
 interface AuthContextType {
   user: User | null;
@@ -19,6 +19,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const [user, setUser] = useState<User | null>(null);
   const [token, setToken] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
+  const { message } = App.useApp();
 
   // 从 localStorage 恢复登录状态
   useEffect(() => {

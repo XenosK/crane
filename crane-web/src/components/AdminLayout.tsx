@@ -16,6 +16,7 @@ import {
   SafetyOutlined,
   CloudServerOutlined,
   LogoutOutlined,
+  ApartmentOutlined,
 } from "@ant-design/icons";
 import type { MenuItemType } from "antd/es/menu/hooks/useItems";
 import { useAuth } from "@/contexts/AuthContext";
@@ -80,6 +81,18 @@ const menuConfig: MenuItem[] = [
     ],
   },
   {
+    key: "semantic",
+    label: "语义建模",
+    icon: <ApartmentOutlined />,
+    children: [
+      {
+        key: "semantic/model",
+        label: "语义模型",
+        icon: <ApartmentOutlined />,
+      },
+    ],
+  },
+  {
     key: "system",
     label: "系统配置",
     icon: <SettingOutlined />,
@@ -124,8 +137,25 @@ interface AdminLayoutProps {
 }
 
 export default function AdminLayout({ children, onMenuChange, currentPage }: AdminLayoutProps) {
-  const [selectedTopMenu, setSelectedTopMenu] = useState<string>("metrics");
-  const [selectedSubMenu, setSelectedSubMenu] = useState<string>("metrics/overview");
+  // 根据 currentPage 初始化选中的菜单
+  const getInitialTopMenu = (page?: string): string => {
+    if (!page) return "metrics";
+    const topMenu = menuConfig.find((item) =>
+      item.children?.some((child) => child.key === page)
+    );
+    return topMenu?.key || "metrics";
+  };
+
+  const getInitialSubMenu = (page?: string): string => {
+    return page || "metrics/overview";
+  };
+
+  const [selectedTopMenu, setSelectedTopMenu] = useState<string>(() => 
+    getInitialTopMenu(currentPage)
+  );
+  const [selectedSubMenu, setSelectedSubMenu] = useState<string>(() => 
+    getInitialSubMenu(currentPage)
+  );
   const { user, logout } = useAuth();
   const router = useRouter();
 
@@ -168,12 +198,13 @@ export default function AdminLayout({ children, onMenuChange, currentPage }: Adm
 
   const handleTopMenuClick: MenuProps["onClick"] = (e) => {
     const key = e.key as string;
-    setSelectedTopMenu(key);
     // 自动选择该一级菜单下的第一个二级菜单
     const firstSubMenu = menuConfig
       .find((item) => item.key === key)
       ?.children?.[0]?.key;
     if (firstSubMenu) {
+      // 先更新状态，再跳转路由，避免闪烁
+      setSelectedTopMenu(key);
       setSelectedSubMenu(firstSubMenu);
       onMenuChange?.(firstSubMenu);
       // 使用 Next.js 路由跳转
@@ -183,6 +214,7 @@ export default function AdminLayout({ children, onMenuChange, currentPage }: Adm
 
   const handleSubMenuClick: MenuProps["onClick"] = (e) => {
     const key = e.key as string;
+    // 先更新状态，再跳转路由，避免闪烁
     setSelectedSubMenu(key);
     onMenuChange?.(key);
     // 使用 Next.js 路由跳转
@@ -195,12 +227,14 @@ export default function AdminLayout({ children, onMenuChange, currentPage }: Adm
       const topMenu = menuConfig.find((item) =>
         item.children?.some((child) => child.key === currentPage)
       );
-      if (topMenu) {
+      if (topMenu && topMenu.key !== selectedTopMenu) {
         setSelectedTopMenu(topMenu.key);
+      }
+      if (currentPage !== selectedSubMenu) {
         setSelectedSubMenu(currentPage);
       }
     }
-  }, [currentPage]);
+  }, [currentPage, selectedTopMenu, selectedSubMenu]);
 
   return (
     <Layout style={{ minHeight: "100vh", background: "#f0f2f5" }}>
